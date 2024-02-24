@@ -45,6 +45,11 @@ v-delete-dnsmanager-domain() { # $1 = user, $2 = domain, $3 = restart
     echo "$query"
 }
 
+v-delete-dnsmanager-record() { # $1 = user, $2 = domain, $3 = id, $4 = sub_domen
+    echo "Видаляємо записи для домен. Аргументи: $@"
+    query=$(curl -s -X POST -d "auth=$keyauthdnsmanager&out=json&lang=ua&func=domain.record.delete&plid=$2&name=$4&sok=ok" "$URL_DNS_MANAGER")
+}
+
 v-apidnsmanager-domain() {
     echo -e "\e[31mcheck\e[0m key-to-DNSmanager"
     key_to_DNSmanager
@@ -60,6 +65,10 @@ v-apidnsmanager-domain() {
     v-delete-dns-domain)
         shift
         v-delete-dnsmanager-domain "$@"
+        ;;
+    v-delete-dns-record)
+        shift
+        v-delete-dnsmanager-record "$@"
         ;;
     *)
         echo "Невідомий аргумент: $1"

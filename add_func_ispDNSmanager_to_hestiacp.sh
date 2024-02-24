@@ -43,3 +43,18 @@ else
     sed -i '/exit$/i\v-apidnsmanager-domain "v-add-dns-record" "$@"' "$file"
     echo "add new function in /usr/local/hestia/bin/v-add-dns-record"
 fi
+
+# v-delete-dns-record
+file="/usr/local/hestia/bin/v-delete-dns-record"
+string1="source \$HESTIA/func/shellapidnsmanager.sh"
+string2="# shellcheck source=/usr/local/hestia/func/shellapidnsmanager.sh"
+
+if grep -qF "$string1" "$file" && grep -qF "$string2" "$file" && grep -qF "$string3" "$file"; then
+    echo "Changes were not made /usr/local/hestia/bin/v-delete-dns-record"
+else
+    sed -i '/Includes/a source $HESTIA/func/shellapidnsmanager.sh' "$file"
+    sed -i '/Includes/a # shellcheck source=/usr/local/hestia/func/shellapidnsmanager.sh' "$file"
+    sed -i "/# Deleting record/a record_deleting=\$(grep \"ID='\$id'\" \"\$USER_DATA/dns/\$domain.conf\" | awk -F\"'\" '/RECORD/{print \$4}')" "$file"
+    sed -i '/exit$/i\v-apidnsmanager-domain "v-apidnsmanager-domain "v-delete-dns-record" "$@" "$record_deleting"' "$file"
+    echo "add new function in /usr/local/hestia/bin/v-delete-dns-record"
+fi
